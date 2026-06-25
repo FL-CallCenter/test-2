@@ -386,13 +386,16 @@ const rawCoords = {
               const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
               rows.forEach((row, rowIndex) => {
+                  // SKIP THE BREEDS TAB SO THEY DON'T MIX WITH LOCATIONS
+                  if (sheetName.toUpperCase().includes("BREED")) return;
+
                   // Skip header rows if present
                   if (rowIndex === 0 && isNaN(Number(row[1]))) return; 
 
                   if (row.length < 8) return; // Safeguard against completely empty rows
 
                   let phoneNumber = row[2] ? String(row[2]).trim() : "";
-
+                
                   // --- THE GATEKEEPER START ---
                   // If phone is blank or says OFFLINE, skip this location entirely
                   if (phoneNumber === "" || phoneNumber.toUpperCase() === "OFFLINE") {
