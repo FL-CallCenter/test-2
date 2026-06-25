@@ -387,7 +387,7 @@ const rawCoords = {
 
               rows.forEach((row, rowIndex) => {
                   // SKIP THE BREEDS TAB SO THEY DON'T MIX WITH LOCATIONS
-                  if (sheetName.toUpperCase().includes("BREED")) return;
+                  if (sheetName.toUpperCase().includes("BREEDS")) return;
 
                   // Skip header rows if present
                   if (rowIndex === 0 && isNaN(Number(row[1]))) return; 
