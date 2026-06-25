@@ -435,7 +435,7 @@ const rawCoords = {
     list.innerHTML = ""; res.innerHTML = "";
     const match = data.find(d => d.zip === zip);
     if (match) {
-        res.innerText = "📍 Match Found: " + match.city;
+        res.innerText = "📍 Match Found: " + match.name;
         head.classList.remove('hidden'); head.innerText = "SEARCH RESULT";
         renderSingleRow(match, false);
         let hubCoords = rawCoords[match.city]; 
@@ -465,7 +465,7 @@ const rawCoords = {
                 res.innerHTML = `<span style="color: #ff8080;">🛑 Neighbor Found: ${closestDist.toFixed(1)} miles away</span>`;
                 head.classList.remove('hidden'); head.innerText = "NEIGHBOR ALERT";
                 list.innerHTML = `<div style="background:#fff5f5; padding:25px; border-radius:15px; text-align:center; color:#c53030; margin-bottom:20px; border:2px solid #feb2b2; line-height:1.8;">
-                    <strong>🛑 NEIGHBOR ZIP: APPROVAL REQUIRED</strong><br>ZIP ${zip} is ${closestDist.toFixed(1)} miles from FurryLand ${closestRow.city}.
+                    <strong>🛑 NEIGHBOR ZIP: APPROVAL REQUIRED</strong><br>ZIP ${zip} is ${closestDist.toFixed(1)} miles from FurryLand ${closestRow.name}.
                 </div>`;
                 renderSingleRow(closestRow, true);
                 let hubCoords = rawCoords[closestRow.city];
@@ -493,7 +493,7 @@ const rawCoords = {
       const city = d.city.trim();
       if (city && rawCoords[city] && !markers[city]) {
         const icon = L.divIcon({ className: '', html: '<div class="pulsing-marker"></div>', iconSize: [10, 10], iconAnchor: [5, 5] });
-        markers[city] = L.marker(rawCoords[city], { icon: icon }).addTo(map).bindPopup(`<strong>FurryLand ${city}</strong><br>📞 ${d.phone}`);
+        markers[city] = L.marker(rawCoords[city], { icon: icon }).addTo(map).bindPopup(`<strong>FurryLand ${d.name}</strong><br>📞 ${d.phone}`);
       }
     });
   }
@@ -530,7 +530,7 @@ const rawCoords = {
         <thead><tr><th>Hub Location</th><th>Phone Number</th><th>Action</th></tr></thead>
         <tbody>
           <tr>
-            <td><span class="city-name">${m.city}</span>${badge}</td>
+            <td><span class="city-name">${m.name}</span>${badge}</td>
             <td>${m.phone} <button class="copy-btn" onclick="navigator.clipboard.writeText('${m.phone}');alert('Copied!')">📋</button></td>
             <td><a href="${m.link}" target="_blank" class="action-link">📅 OPEN MOEGO</a></td>
           </tr>
@@ -541,22 +541,22 @@ const rawCoords = {
 
   function buildCustomDropdown() {
     const dropdown = document.getElementById('customDropdown');
-    const cities = [...new Set(data.map(d => d.city.trim()))].sort();
-    dropdown.innerHTML = cities.map(city => `<div class="dropdown-item" onclick="selectCity('${city}')">${city}</div>`).join('');
-  }
+    const names = [...new Set(data.map(d => d.name.trim()))].sort();
+    dropdown.innerHTML = names.map(name => `<div class="dropdown-item" onclick="selectCity('${name}')">${name}</div>`).join('');
+}
 
-  function selectCity(city) {
-    document.getElementById('hubSearchInput').value = city;
+  function selectCity(name) {
+    document.getElementById('hubSearchInput').value = name;
     document.getElementById('customDropdown').style.display = 'none';
-    const match = data.find(d => d.city.trim() === city);
+    const match = data.find(d => d.name.trim() === name);
     if (match) { 
-        let hubCoords = rawCoords[city];
+        let hubCoords = rawCoords[match.city]; // Keeps map zooming tied to Column E
         if(hubCoords) map.flyTo(hubCoords, 10);
-        document.getElementById('result').innerText = "📍 Hub Selected: " + city;
+        document.getElementById('result').innerText = "📍 Hub Selected: " + name;
         document.getElementById('list-header').classList.remove('hidden');
         renderSingleRow(match);
     }
-  }
+}
 
   function showDropdown() { document.getElementById('customDropdown').style.display = 'block'; }
   function filterDropdown() {
